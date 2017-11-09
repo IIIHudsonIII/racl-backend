@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+	<title>RACL - Cadastro de Dispositivos</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:600" type="text/css" rel="stylesheet" />
+	
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.custom.min.js"></script>
+	<script type="text/javascript" src="js/functions.js"></script>
+	<script type="text/javascript" src="js/device.js"></script>
+</head>
+<body>
+	<header>
+		<h1>Cadastro de Dispositivos</h1>
+	</header>
+	<article>
+		<!--<form method="post" id="form_device">-->
+			<h2>
+			<table>
+				<tr>
+					<td class="label"><label for="id">ID (chave única do dispositivo)</label>:</td>
+					<td>
+						<input type="text" class="field mandatory" id="id">
+						<select id="devices">
+							<option value="" selected>(Novo cadastro)</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="label"><label for="name">Nome</label>:</td>
+					<td><input type="text" class="field mandatory" id="name"></td>
+				</tr>
+				<tr>
+					<td class="label" style="position: absolute"><label for="information">Observação</label>:</td>
+					<td><textarea style="margin: 0px; width: 167px; height: 74px;" type="text" class="field" id="information"></textarea></td>
+				</tr>
+			</table>
+			</h2>
+			
+			<br>
+			
+			<input type="button" id="BTN_ADD" value="Adicionar">
+			<input type="button" id="BTN_UPDATE" value="Atualizar">
+			<input type="button" id="BTN_DELETE" value="Deletar">
+		<!--</form>-->
+	</article>
+</body>
+</html>
+	

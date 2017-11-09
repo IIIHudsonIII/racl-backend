@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+	<title>RACL - Cadastro de Rotas</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:600" type="text/css" rel="stylesheet" />
+	<link href="estilo.css" type="text/css" rel="stylesheet" />
+	
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.custom.min.js"></script>
+	<script type="text/javascript" src="js/functions.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+</head>
+<body>
+	<header>
+		<h1>Cadastro de rotas</h1>
+	</header>
+	
+	<article>
+		<header>
+			<h2>
+				<label for="name">Descrição</label>:
+				<input id="name" class="field mandatory"><input id="id" type="hidden" class="field">
+					
+				<select id="routes">
+					<option value="" selected>(Novo cadastro)</option>
+				</select>
+			</h2>
+		</header>
+		
+		<br>
+		
+		<table align="center" text-align="inicial" cellpadding="2" width="60%">
+			<tr>
+				<td style="border-style: outset; width: 50%">
+					<header><h3>Agendamentos</h3></header>
+				</td>
+				<td>&nbsp;</td>
+				<td style="border-style: outset">
+					<header><h3>Pontos</h3></header>
+				</td>
+			</tr>
+			<tr>
+				<td style="50%" id="form_schedule">
+					<!--<form method="post" id="form_schedule">-->
+						<div>
+							<label for="week_day">Dia da semana</label>:
+							<select id="week_day" class="mandatory"><option value="" selected></option></select>
+						<br>
+							<label for="initial_hour,final_hour">Período</label>:
+							<input id="initial_hour" class="mandatory" type="time">
+							<input id="final_hour" class="mandatory" type="time">
+						<br>
+							<label for="id_device">Dispositivo</label>:
+							<select id="id_device" class="mandatory"><option value="" selected></option></select>
+						<br>&nbsp;
+						</div>
+						<div>
+							<input type="submit" value="+ Adicionar" style="width:100%" name="BTN_ADD_SCHEDULE" id="BTN_ADD_SCHEDULE" />
+						</div>
+					<!--</form>-->
+					&nbsp;
+				</td>
+				<td>&nbsp;</td>
+				<!--<fieldset><legend>Endereço</legend></fieldset>-->
+				<td style="50%" id="form_point">
+					<!--<form method="post" id="form_point">-->
+						<div>
+							<label for="name_point">Endereço</label>:
+							<input type="text" id="name_point" name="name_point" class="mandatory" data-latitude="0" data-longitude="0" style="width: 300px"/>
+							<br>&nbsp;<br>&nbsp;
+						</div>
+						<div>
+							<input type="submit" value="+ Adicionar" style="width:100%" name="BTN_ADD_POINT" id="BTN_ADD_POINT" />
+						</div>
+					<!--</form>
+					-->&nbsp;
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="saved_schedules" style="display: none">Agendamentos</label>
+					<table id="saved_schedules" class="field mandatory" border="0"></table>
+				</td>
+				<td>&nbsp;</td>
+				<td style="display: inline-block;">
+					<label for="saved_points" style="display: none">Pontos</label>
+					<table id="saved_points" class="field mandatory" border="0"></table>
+				</td>
+			</tr>
+		</table>
+	</article>
+	
+	<input value="Adicionar" type="button" id="BTN_ADD">
+	<input value="Atualizar" type="submit" id="BTN_UPDATE">
+	<input value="Deletar" type="submit" id="BTN_DELETE">
+<script>
+var geocoder;
+var map;
+var marker;
+
+var ARRAY_WEEK_DAYS = [
+	{id : "MONDAY", value : "Segunda-feira"}, 
+	{id : "TUESDAY", value : "Terça-feira"}, 
+	{id : "WEDNESDAY", value : "Quarta-feira"}, 
+	{id : "THURSDAY", value : "Quinta-feira"}, 
+	{id : "FRIDAY", value : "Sexta-feira"}, 
+	{id : "SATURDAY", value : "Sábado"}, 
+	{id : "SUNDAY", value : "Domingo"}
+];
+
+function initialize() {
+	geocoder = new google.maps.Geocoder();
+}
+
+function getWeekDayValue(week_day) {
+	var response = "";
+	$(ARRAY_WEEK_DAYS).each(function() {
+		if (this.id == week_day) {
+			response = this.value;
+			return;
+		}
+	});
+	return response;
+}
+
+function getDeviceJson(id_device) {
+	var response = "";
+	$(jsonDevices).each(function() {
+		if (this.id == id_device) {
+			response = this.value;
+			return;
+		}
+	});
+	return response;
+}
+
+function addRowSchedule( schedule ) {
+	$('\n<tr class="schedule" border="1px" data-id="' + schedule.id + '" data-week_day="' + schedule.week_day 
+			+ '" data-initial_hour="' + schedule.initial_hour + '" data-final_hour="' + schedule.final_hour 
+			+ '" data-id_device="' + schedule.id_device + '">'
+		+ '\n <td>&nbsp;<input type="button" class="remover" onClick="remover(this);" value=" X "></td>'
+		+ '\n <td>' + getWeekDayValue(schedule.week_day) + ', </td>'
+		+ '\n <td>' + schedule.initial_hour + 'h - ' + schedule.final_hour + 'h</td>'
+		+ '\n <td>' + schedule.id_device + '</td>'
+		+ '\n</tr>').appendTo( $("#saved_schedules") );
+}
+	
+function addRowPoint( point ) {
+	$('\n<tr class="point" border="1px" data-id="' + point.id + '" data-name="' + point.name
+			+ '" data-latitude="' + point.latitude + '" data-longitude="' + point.longitude + '">'
+		+ '\n <td><input type="button" class="remover" onClick="remover(this);" value=" X "></td>'
+		+ '\n <td title="(' + point.latitude + '/' + point.longitude + ')">' + point.name + '</td>'
+		+ '\n</tr>').appendTo( $("#saved_points") );
+}
+
+$(document).ready(function () {
+	initialize();
+	
+	$("#name_point").autocomplete({
+		source: function (request, response) {
+			geocoder.geocode({ 'address': request.term + ', Brasil', 'region': 'BR' }, function (results, status) {
+				response($.map(results, function (item) {
+					return {
+						label: item.formatted_address,
+						value: item.formatted_address,
+						latitude: item.geometry.location.lat(),
+          				longitude: item.geometry.location.lng()
+					}
+				}));
+			})
+		},
+		select: function (event, ui) {
+			$("#name_point").data("latitude", ui.item.latitude);
+    		$("#name_point").data("longitude", ui.item.longitude);
+		}
+	});
+	
+	$("#BTN_ADD_SCHEDULE").on("click", function(event) {
+		//event.preventDefault();
+		if (validate("form_schedule")) {
+			var schedule = {
+				week_day: $("#week_day").val(),
+				initial_hour: $("#initial_hour").val(),
+				final_hour: $("#final_hour").val(),
+				id_device: $("#id_device").val()
+			};
+			addRowSchedule( schedule );
+		}
+	});
+	
+	$("#BTN_ADD_POINT").on("click", function(event) {
+		//event.preventDefault();
+		if (validate("form_point")) {
+			var point = {
+				name: $("#name_point").val(),
+				latitude: $("#name_point").data("latitude"),
+				longitude: $("#name_point").data("longitude")
+			};
+			addRowPoint( point );
+		}
+	});
+	
+	$("select#routes").on("change", function() {
+		$("#id").val("");
+		var option = $(this).children().filter("option:selected");
+		
+		$("[id^='saved_']").html("");
+		
+		if (option.val()) {
+			$("#BTN_ADD,#name").prop("disabled", "disabled");
+			$("#BTN_UPDATE,#BTN_DELETE").prop("disabled", "");
+			
+			var route = getRouteById(option.val());
+			
+			$.each($(".field"), function() {
+				var id = $(this).prop("id");
+				var value = option.data(id);
+				$(this).val( value );
+			});
+			
+			$.each(route.schedules, function(i, schedule) {
+				addRowSchedule(schedule);
+			});
+			
+			$.each(route.points, function(i, point) {
+				addRowPoint(point);
+			});
+			
+		} else {
+		
+			$("#BTN_ADD,#name").prop("disabled", "");
+			$("#BTN_UPDATE,#BTN_DELETE").prop("disabled", "disabled");
+			$(".field").val("");
+			
+		}
+	}).change();
+	
+	$(ARRAY_WEEK_DAYS).each(function() {
+		$('<option value="' + this.id + '" >' + this.value + '</option>').appendTo( $("select#week_day") );
+	});
+	
+	$("#BTN_ADD,#BTN_UPDATE").on("click", save);
+		
+	$("#BTN_DELETE").on("click", function(event) {
+		del(DIRECTION_ROUTE, JSON.stringify({ id: $("#id").val() }) );
+	});
+	
+	get(DIRECTION_ROUTE, null, callbackGET);
+	get(DIRECTION_DEVICE, null, callbackGETDevices);
+});
+
+var jsonRoutes = [];
+var jsonDevices = [];
+
+function getRouteById(id) {
+	var response = null;
+	$.each(jsonRoutes, function(i, route) {
+		if (route.id == id) {
+			response = route;
+			return;
+		}
+	});
+	return response;
+}
+	
+var callbackGET = function(routes) {
+	jsonRoutes = [];
+	if (routes) {
+		$.each(routes, function(i, route) {
+			console.log(route);
+			
+			var information = route.name + "\n" + route.week_days;
+			$('<option value="' + route.id + '" title="' + information + '" ' + ' data-id="' + route.id 
+				+ '" data-name="' + route.name + '" >' + route.name + '</option>').appendTo( $("select#routes") );
+			//jsonRoutes[i] = route;
+		});
+		jsonRoutes = routes;
+	}
+}
+
+var remover = function(button) {
+	$(button).closest("tr").remove();
+};
+
+var save = function(event) {
+	if (validate()) {
+		
+		var route = {
+			id: $("#id").val(),
+			name: $("#name").val(),
+			latitude_min: null, latitude_max: null, longitude_min: null, longitude_max: null,
+			week_days: "",
+			schedules: [], points: []
+		};
+
+		$("#saved_schedules > tbody > tr").each(function(i) {
+			var schedule = $(this).data();
+			route.schedules[i] = {
+				//id: "",
+				week_day: schedule.week_day,
+				initial_hour: schedule.initial_hour,
+				final_hour: schedule.final_hour,
+				information: "",
+				id_device: schedule.id_device
+			};
+			
+			if (!route.week_days || route.week_days.indexOf(schedule.week_day)) { route.week_days += schedule.week_day + ","; }
+		});
+
+		$("#saved_points > tbody > tr").each(function(i) {
+			var point = $(this).data();
+			route.points[i] = {
+				//id: "",
+				name: point.name,
+				latitude: point.latitude,
+				longitude: point.longitude
+			};
+			
+			if (!route.latitude_min || route.latitude_min > point.latitude) { route.latitude_min = point.latitude; }
+			if (!route.latitude_max || route.latitude_max < point.latitude) { route.latitude_max = point.latitude; }
+			if (!route.longitude_min || route.longitude_min > point.longitude) { route.longitude_min = point.longitude; }
+			if (!route.longitude_max || route.longitude_max < point.longitude) { route.longitude_max = point.longitude; }
+		});
+
+		var data = JSON.stringify(route);
+
+		post(DIRECTION_ROUTE, data);
+		
+		location.reload();
+	}
+}
+
+var callbackGETDevices = function(devices) {
+	if (devices) {
+		$.each(devices, function(i, device) {
+			console.log(device);
+			
+			var description = device.id + '\n' + device.name;
+			$('<option value="' + device.id + '" title="' + device.information + '" '
+				+ ' data-id="' + device.id + '" ' + ' data-name="' + device.name + '" '
+				+ ' data-information="' + device.information + '">' + description
+				+ '</option>').appendTo( $("select#id_device") );
+		});
+		jsonDevices = devices;
+	}
+}
+
+/*
+// route
+{
+	name: "",
+	latitude_min: 0,
+	latitude_max: 0,
+	longitude_min: 0,
+	longitude_max: 0,
+	week_days: "",
+	schedules: [
+		{
+			id: "",
+			week_day: "",
+			initial_hour: "",
+			final_hour: "",
+			information: "",
+			id_device: ""
+		}
+	],
+	points: [
+		{
+			id: "",
+			name: "",
+			latitude: "",
+			longitude: ""
+		}
+	]
+}
+*/
+
+</script>
+</body>
+</html>
