@@ -24,7 +24,9 @@ public class RouteRest {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody Route save(@RequestBody Route route) {
-		route.setId(UUID.randomUUID().toString());
+		if (route.getId() == null) {
+			route.setId(UUID.randomUUID().toString());
+		}
 		return routeController.save(route);
 	}
 
@@ -42,6 +44,16 @@ public class RouteRest {
 	public @ResponseBody Route list(String name) {
 		try {
 			return routeController.findByName(name);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error on retrieve.");
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE)
+	public @ResponseBody void deleteById(@RequestBody Route device) {
+		try {
+			routeController.delete(device.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Error on retrieve.");

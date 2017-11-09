@@ -18,6 +18,10 @@ public class RouteController {
 		return routeRepository.save(master);
 	}
 
+	public void delete(String id) {
+		routeRepository.delete(id);
+	}
+
 	public List<Route> list() {
 		return routeRepository.findAll();
 	}

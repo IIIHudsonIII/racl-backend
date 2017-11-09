@@ -10,6 +10,8 @@ public class Device {
 	private String id;
 	private String name;
 	private String information;
+	private double last_latitude;
+	private double last_longitude;
 
 	public String getId() {
 		return id;
@@ -35,4 +37,19 @@ public class Device {
 		this.information = information;
 	}
 
+	public double getLast_latitude() {
+		return last_latitude;
+	}
+
+	public void setLast_latitude(double last_latitude) {
+		this.last_latitude = last_latitude;
+	}
+
+	public double getLast_longitude() {
+		return last_longitude;
+	}
+
+	public void setLast_longitude(double last_longitude) {
+		this.last_longitude = last_longitude;
+	}
 }

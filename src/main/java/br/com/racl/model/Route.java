@@ -1,5 +1,7 @@
 package br.com.racl.model;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,14 +11,13 @@ public class Route {
 	@Id
 	private String id;
 	private String name;
-	private String information;
-	private double latitude_minimum;
-	private double latitude_maximum;
-	private double longitude_minimum;
-	private double longitude_maximum;
+	private double latitude_min;
+	private double latitude_max;
+	private double longitude_min;
+	private double longitude_max;
 	private String week_days;
-	private RouteWeekDayTime route_week_day_device;
-	private RoutePoint route_point;
+	private List<Point> points;
+	private List<Schedule> schedules;
 
 	public String getId() {
 		return id;
@@ -34,44 +35,36 @@ public class Route {
 		this.name = name;
 	}
 
-	public String getInformation() {
-		return information;
+	public double getLatitude_min() {
+		return latitude_min;
 	}
 
-	public void setInformation(String information) {
-		this.information = information;
+	public void setLatitude_min(double latitude_min) {
+		this.latitude_min = latitude_min;
 	}
 
-	public double getLatitude_minimum() {
-		return latitude_minimum;
+	public double getLatitude_max() {
+		return latitude_max;
 	}
 
-	public void setLatitude_minimum(double latitude_minimum) {
-		this.latitude_minimum = latitude_minimum;
+	public void setLatitude_max(double latitude_max) {
+		this.latitude_max = latitude_max;
 	}
 
-	public double getLatitude_maximum() {
-		return latitude_maximum;
+	public double getLongitude_min() {
+		return longitude_min;
 	}
 
-	public void setLatitude_maximum(double latitude_maximum) {
-		this.latitude_maximum = latitude_maximum;
+	public void setLongitude_min(double longitude_min) {
+		this.longitude_min = longitude_min;
 	}
 
-	public double getLongitude_minimum() {
-		return longitude_minimum;
+	public double getLongitude_max() {
+		return longitude_max;
 	}
 
-	public void setLongitude_minimum(double longitude_minimum) {
-		this.longitude_minimum = longitude_minimum;
-	}
-
-	public double getLongitude_maximum() {
-		return longitude_maximum;
-	}
-
-	public void setLongitude_maximum(double longitude_maximum) {
-		this.longitude_maximum = longitude_maximum;
+	public void setLongitude_max(double longitude_max) {
+		this.longitude_max = longitude_max;
 	}
 
 	public String getWeek_days() {
@@ -82,19 +75,19 @@ public class Route {
 		this.week_days = week_days;
 	}
 
-	public RouteWeekDayTime getRoute_week_day_device() {
-		return route_week_day_device;
+	public List<Point> getPoints() {
+		return points;
 	}
 
-	public void setRoute_week_day_device(RouteWeekDayTime route_week_day_device) {
-		this.route_week_day_device = route_week_day_device;
+	public void setPoints(List<Point> points) {
+		this.points = points;
 	}
 
-	public RoutePoint getRoute_point() {
-		return route_point;
+	public List<Schedule> getSchedules() {
+		return schedules;
 	}
 
-	public void setRoute_point(RoutePoint route_point) {
-		this.route_point = route_point;
+	public void setSchedules(List<Schedule> schedules) {
+		this.schedules = schedules;
 	}
 }
