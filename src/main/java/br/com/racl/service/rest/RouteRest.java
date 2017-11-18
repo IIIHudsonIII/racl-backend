@@ -24,7 +24,7 @@ public class RouteRest {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody Route save(@RequestBody Route route) {
-		if (route.getId() == null) {
+		if (route.getId() == null || route.getId().isEmpty()) {
 			route.setId(UUID.randomUUID().toString());
 		}
 		return routeController.save(route);
