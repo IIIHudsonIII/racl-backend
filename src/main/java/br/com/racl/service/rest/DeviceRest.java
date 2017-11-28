@@ -23,7 +23,16 @@ public class DeviceRest {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody Device save(@RequestBody Device device) {
-		return deviceController.save(device);
+		if (!device.validate()) {
+			return null;
+		}
+//		if (device.hadMoved()) {
+//			Device original = findById(device.getId());
+//			device = device.populate(original);
+//			return deviceController.update(device);
+//		}
+//		return deviceController.insert(device);
+		return deviceController.update(device);
 	}
 
 	@RequestMapping(method = RequestMethod.GET)

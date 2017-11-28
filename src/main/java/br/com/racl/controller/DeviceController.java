@@ -14,7 +14,11 @@ public class DeviceController {
 	@Autowired
 	private DeviceRepository deviceRepository;
 
-	public Device save(Device device) {
+	public Device insert(Device device) {
+		return deviceRepository.insert(device);
+	}
+	
+	public Device update(Device device) {
 		return deviceRepository.save(device);
 	}
 
