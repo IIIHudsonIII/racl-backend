@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import br.com.racl.model.Device;
 import br.com.racl.repository.DeviceRepository;
 
+@Controller
 @Component
 public class DeviceController {
 

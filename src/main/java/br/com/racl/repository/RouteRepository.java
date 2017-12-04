@@ -9,5 +9,4 @@ import br.com.racl.model.Route;
 public interface RouteRepository extends MongoRepository<Route, String> {
 
 	public Route findByName(String name);
-
 }

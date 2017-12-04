@@ -11,10 +11,10 @@ public class Route {
 	@Id
 	private String id;
 	private String name;
-	private double latitude_min;
-	private double latitude_max;
-	private double longitude_min;
-	private double longitude_max;
+	private Double latitude_min;
+	private Double latitude_max;
+	private Double longitude_min;
+	private Double longitude_max;
 	private String week_days;
 	private List<Point> points;
 	private List<Schedule> schedules;
@@ -35,35 +35,35 @@ public class Route {
 		this.name = name;
 	}
 
-	public double getLatitude_min() {
+	public Double getLatitude_min() {
 		return latitude_min;
 	}
 
-	public void setLatitude_min(double latitude_min) {
+	public void setLatitude_min(Double latitude_min) {
 		this.latitude_min = latitude_min;
 	}
 
-	public double getLatitude_max() {
+	public Double getLatitude_max() {
 		return latitude_max;
 	}
 
-	public void setLatitude_max(double latitude_max) {
+	public void setLatitude_max(Double latitude_max) {
 		this.latitude_max = latitude_max;
 	}
 
-	public double getLongitude_min() {
+	public Double getLongitude_min() {
 		return longitude_min;
 	}
 
-	public void setLongitude_min(double longitude_min) {
+	public void setLongitude_min(Double longitude_min) {
 		this.longitude_min = longitude_min;
 	}
 
-	public double getLongitude_max() {
+	public Double getLongitude_max() {
 		return longitude_max;
 	}
 
-	public void setLongitude_max(double longitude_max) {
+	public void setLongitude_max(Double longitude_max) {
 		this.longitude_max = longitude_max;
 	}
 

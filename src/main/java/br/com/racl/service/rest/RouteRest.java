@@ -50,6 +50,23 @@ public class RouteRest {
 		}
 	}
 
+	@RequestMapping(method = RequestMethod.GET, params = {"latitude", "longitude"})
+	public @ResponseBody Route findByLatLng(Double latitude, Double longitude) {
+		try {
+			List<Route> routes = routeController.list();
+			for (Route route : routes) {
+				if ((route.getLatitude_min() <= latitude && latitude <= route.getLatitude_max()) &&
+						(route.getLongitude_min() <= longitude && longitude <= route.getLongitude_max())) {
+					return route;
+				}
+			}
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error on retrieve.");
+		}
+	}
+
 	@RequestMapping(method = RequestMethod.DELETE)
 	public @ResponseBody void deleteById(@RequestBody Route device) {
 		try {
