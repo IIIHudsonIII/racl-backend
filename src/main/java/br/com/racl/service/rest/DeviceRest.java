@@ -26,12 +26,6 @@ public class DeviceRest {
 		if (!device.validate()) {
 			return null;
 		}
-//		if (device.hadMoved()) {
-//			Device original = findById(device.getId());
-//			device = device.populate(original);
-//			return deviceController.update(device);
-//		}
-//		return deviceController.insert(device);
 		return deviceController.update(device);
 	}
 

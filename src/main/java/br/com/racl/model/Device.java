@@ -52,7 +52,7 @@ public class Device {
 	public void setLast_longitude(double last_longitude) {
 		this.last_longitude = last_longitude;
 	}
-	
+
 	public Device populate(Device old) {
 		if (hadMoved()) {
 			this.name = old.getName();
@@ -64,7 +64,7 @@ public class Device {
 	public boolean validate() {
 		return id != null && !(id = id.trim()).isEmpty();
 	}
-	
+
 	public boolean hadMoved() {
 		return this.last_latitude != 0 && this.last_longitude != 0;
 	}
