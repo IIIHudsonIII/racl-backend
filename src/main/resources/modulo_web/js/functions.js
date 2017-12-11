@@ -7,7 +7,7 @@ if (!String.prototype.format) {
   };
 }
 
-var DEFAULT_URL = "http://localhost:8080";
+var DEFAULT_URL = "http://35.198.40.128:8080";
 
 var DIRECTION_DEVICE = "/device";
 var DIRECTION_ROUTE = "/route";
